@@ -1,22 +1,21 @@
-import {
-  Camera
-} from '../../../src/Three';
+import { Camera, EventDispatcher } from "../../../src/Three";
 
-export class DeviceOrientationControls {
-  constructor(object: Camera);
+export class DeviceOrientationControls extends EventDispatcher {
 
-  object: Camera;
+	constructor( object: Camera );
 
-  // API
+	object: Camera;
 
-  alphaOffset: number;
-  deviceOrientation: any;
-  enabled: boolean;
-  screenOrientation: number;
+	// API
 
-  connect(): void;
-  disconnect(): void;
-  dispose(): void;
-  update(): void;
+	alphaOffset: number;
+	deviceOrientation: any;
+	enabled: boolean;
+	screenOrientation: number;
+
+	connect(): void;
+	disconnect(): void;
+	dispose(): void;
+	update(): void;
 
 }

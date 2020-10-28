@@ -1,7 +1,3 @@
-/**
- * @author sunag / http://www.sunag.com.br/
- */
-
 import { TempNode } from '../core/TempNode.js';
 import { FunctionNode } from '../core/FunctionNode.js';
 import { MaxMIPLevelNode } from './MaxMIPLevelNode.js';
@@ -42,7 +38,7 @@ SpecularMIPLevelNode.prototype = Object.create( TempNode.prototype );
 SpecularMIPLevelNode.prototype.constructor = SpecularMIPLevelNode;
 SpecularMIPLevelNode.prototype.nodeType = "SpecularMIPLevel";
 
-SpecularMIPLevelNode.prototype.setTexture = function( texture ) {
+SpecularMIPLevelNode.prototype.setTexture = function ( texture ) {
 
 	this.texture = texture;
 

@@ -1,7 +1,4 @@
 /**
- * @author Mugen87 / https://github.com/Mugen87
- * @author spite / https://github.com/spite
- *
  * You can use this geometry to create a decal mesh, that serves different kinds of purposes.
  * e.g. adding unique details to models, performing dynamic visual environmental changes or covering seams.
  *
@@ -44,9 +41,9 @@ THREE.DecalGeometry = function ( mesh, position, orientation, size ) {
 
 	// build geometry
 
-	this.addAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-	this.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-	this.addAttribute( 'uv', new THREE.Float32BufferAttribute( uvs, 2 ) );
+	this.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+	this.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+	this.setAttribute( 'uv', new THREE.Float32BufferAttribute( uvs, 2 ) );
 
 	function generate() {
 

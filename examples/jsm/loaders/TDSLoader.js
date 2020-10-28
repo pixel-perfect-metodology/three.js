@@ -1,14 +1,3 @@
-/**
- * Autodesk 3DS three.js file loader, based on lib3ds.
- *
- * Loads geometry with uv and materials basic properties with texture support.
- *
- * @author @tentone
- * @author @timknip
- * @class TDSLoader
- * @constructor
- */
-
 import {
 	AdditiveBlending,
 	BufferGeometry,
@@ -24,6 +13,15 @@ import {
 	MeshPhongMaterial,
 	TextureLoader
 } from "../../../build/three.module.js";
+
+/**
+ * Autodesk 3DS three.js file loader, based on lib3ds.
+ *
+ * Loads geometry with uv and materials basic properties with texture support.
+ *
+ * @class TDSLoader
+ * @constructor
+ */
 
 var TDSLoader = function ( manager ) {
 
@@ -56,15 +54,35 @@ TDSLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 		var scope = this;
 
-		var path = ( scope.path === '' ) ? LoaderUtils.extractUrlBase( url ) : scope.path;
+		var path = ( this.path === '' ) ? LoaderUtils.extractUrlBase( url ) : this.path;
 
 		var loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
+		loader.setRequestHeader( this.requestHeader );
+		loader.setWithCredentials( this.withCredentials );
 
 		loader.load( url, function ( data ) {
 
-			onLoad( scope.parse( data, path ) );
+			try {
+
+				onLoad( scope.parse( data, path ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
 
 		}, onProgress, onError );
 
@@ -288,6 +306,13 @@ TDSLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 				material.shininess = shininess;
 				this.debugMessage( '   Shininess : ' + shininess );
 
+			} else if ( next === MAT_TRANSPARENCY ) {
+
+				var opacity = this.readWord( data );
+				material.opacity = opacity * 0.01;
+				this.debugMessage( '  Opacity : ' + opacity );
+				material.transparent = opacity < 100 ? true : false;
+
 			} else if ( next === MAT_TEXMAP ) {
 
 				this.debugMessage( '   ColorMap' );
@@ -367,7 +392,7 @@ TDSLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 				}
 
-				geometry.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+				geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
 
 			} else if ( next === FACE_ARRAY ) {
 
@@ -391,7 +416,7 @@ TDSLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 				}
 
-				geometry.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+				geometry.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
 
 
 			} else if ( next === MESH_MATRIX ) {
@@ -434,8 +459,8 @@ TDSLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 				matrix.transpose();
 
 				var inverse = new Matrix4();
-				inverse.getInverse( matrix, true );
-				geometry.applyMatrix( inverse );
+				inverse.getInverse( matrix );
+				geometry.applyMatrix4( inverse );
 
 				matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
 
@@ -928,7 +953,7 @@ var MAT_DIFFUSE = 0xA020;
 var MAT_SPECULAR = 0xA030;
 var MAT_SHININESS = 0xA040;
 // var MAT_SHIN2PCT = 0xA041;
-// var MAT_TRANSPARENCY = 0xA050;
+var MAT_TRANSPARENCY = 0xA050;
 // var MAT_XPFALL = 0xA052;
 // var MAT_USE_XPFALL = 0xA240;
 // var MAT_REFBLUR = 0xA053;
